@@ -35,4 +35,18 @@ return [
         ],
     ],
 
-];
+    'twilio' => [
+    'sid'   => env('TWILIO_SID'),
+    'token' => env('TWILIO_TOKEN'),
+    'from'  => env('TWILIO_FROM'),
+],
+
+  'huggingface' => [
+        'token' => env('HUGGINGFACE_TOKEN'),
+        // default model – you can change this later
+        'model' => env('HUGGINGFACE_MODEL', 'stabilityai/stable-diffusion-xl-base-1.0'),
+    ],
+
+
+
+]; 

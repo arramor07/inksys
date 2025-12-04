@@ -1,0 +1,7 @@
+<p>You have a new message from the InkTech contact form.</p>
+
+<p><strong>Name:</strong> {{ $data['name'] }}</p>
+<p><strong>Email:</strong> {{ $data['email'] }}</p>
+
+<p><strong>Message:</strong></p>
+<p>{{ nl2br(e($data['message'])) }}</p>

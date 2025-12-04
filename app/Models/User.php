@@ -17,11 +17,24 @@ class User extends Authenticatable
      *
      * @var list<string>
      */
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-    ];
+    // app/Models/User.php
+
+protected $fillable = [
+    'name',
+    'email',
+    'password',
+    'status',
+    'role',   // ✅ add this
+];
+
+
+public function bookings()
+{
+    return $this->hasMany(Booking::class);
+}
+
+
+
 
     /**
      * The attributes that should be hidden for serialization.
