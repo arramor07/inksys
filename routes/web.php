@@ -11,9 +11,25 @@ use App\Http\Controllers\Admin\ReviewAdminController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\SalesController;
+use App\Http\Controllers\ShopController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\FeaturedTattooController;
+use App\Models\Shop;
+use App\Http\Controllers\LandingPageController;
+use App\Http\Controllers\ShopRegistrationController;
+use App\Http\Controllers\ShopClientController;
 
 
 
+
+Route::get('/', function () {
+    $shops = Shop::where('status', 'approved')->get(); // only approved shops
+    return view('welcome', compact('shops')); // ✅ pass $shops
+});
+
+
+
+Route::get('/', [HomeController::class, 'index']);
 /*
 |--------------------------------------------------------------------------
 | PUBLIC HOME
@@ -184,6 +200,57 @@ Route::middleware(['auth', 'role:admin'])
         Route::delete('/user-registrations/{id}', [UserRegistrationController::class, 'destroy'])
             ->name('user-registrations.destroy');
     });
+
+    /*SHOP CONTROLLER*/
+    Route::get('/shop/register', [ShopController::class, 'create']);
+Route::post('/shop/register', [ShopController::class, 'store']);
+Route::middleware(['auth','role:superadmin'])->group(function() {
+    Route::get('/shops/pending', [ShopController::class, 'pending']);
+    Route::post('/shops/{shop}/approve', [ShopController::class, 'approve']);
+});
+
+/*FEATURED TATTOOS*/
+Route::middleware(['auth','role:shop_admin'])->group(function() {
+    Route::prefix('shops/{shop}/featured-tattoos')->group(function() {
+        Route::get('/', [FeaturedTattooController::class, 'index'])->name('featured_tattoos.index');
+        Route::get('/create', [FeaturedTattooController::class, 'create'])->name('featured_tattoos.create');
+        Route::post('/store', [FeaturedTattooController::class, 'store'])->name('featured_tattoos.store');
+        Route::get('/{tattoo}/edit', [FeaturedTattooController::class, 'edit'])->name('featured_tattoos.edit');
+        Route::put('/{tattoo}', [FeaturedTattooController::class, 'update'])->name('featured_tattoos.update');
+        Route::delete('/{tattoo}', [FeaturedTattooController::class, 'destroy'])->name('featured_tattoos.destroy');
+    });
+});
+
+
+Route::get('/', function (\Illuminate\Http\Request $request) {
+    $query = $request->input('search');
+    $shops = Shop::where('status','approved')
+                 ->when($query, function($q) use ($query){
+                     $q->where('name', 'like', "%$query%");
+                 })
+                 ->get();
+
+    return view('welcome', compact('shops'));
+});
+
+/*LANDING PAGE*/
+Route::get('/', [LandingPageController::class, 'index'])->name('landing');
+Route::get('/api/shops/{id}/featured-tattoos', [ShopController::class, 'featuredTattoos']);
+
+
+/*SHOP REGISTRATION*/
+Route::get('/register-shop', [ShopRegistrationController::class,'create'])->name('shops.register.form');
+
+Route::post('/register-shop', [ShopRegistrationController::class,'store'])->name('shops.register');
+
+
+Route::prefix('shops/{shop:slug}')->group(function () {
+    Route::get('/home', [ShopClientController::class, 'home'])->name('shop.home');
+    Route::get('/portfolio', [ShopClientController::class, 'portfolio'])->name('shop.portfolio');
+    Route::get('/book', [ShopClientController::class, 'book'])->name('shop.book');
+    Route::get('/contact', [ShopClientController::class, 'contact'])->name('shop.contact');
+    Route::get('/reviews', [ShopClientController::class, 'reviews'])->name('shop.reviews');
+});
 
 /*
 |--------------------------------------------------------------------------

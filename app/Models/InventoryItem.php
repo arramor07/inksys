@@ -16,10 +16,16 @@ class InventoryItem extends Model
         'low_stock_threshold',
         'unit',
         'remarks',
+        'shop_id',
     ];
 
     public function isLowStock(): bool
     {
         return $this->quantity <= $this->low_stock_threshold;
     }
+
+    public function shop()
+{
+    return $this->belongsTo(Shop::class);
+}
 }

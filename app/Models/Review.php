@@ -12,9 +12,15 @@ class Review extends Model
         'rating',       // 1–5
         'content',      // feedback text
         'is_visible',   // 0 = hidden/pending, 1 = approved
+        'shop_id',
     ];
 
     protected $casts = [
         'is_visible' => 'boolean',
     ];
+
+    public function shop()
+{
+    return $this->belongsTo(Shop::class);
+}
 }

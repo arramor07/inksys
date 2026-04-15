@@ -7,16 +7,10 @@ use Illuminate\Support\Facades\Auth;
 
 class CheckRole
 {
-    public function handle($request, Closure $next, ...$roles)
-    {
-        if (!Auth::check()) {
-            return redirect('/login');
-        }
-
-        if (!in_array(Auth::user()->role, $roles)) {
-            abort(403, 'Unauthorized');
-        }
-
-        return $next($request);
+    public function handle($request, Closure $next, $role){
+    if(auth()->user()->role !== $role){
+        abort(403);
     }
+    return $next($request);
+}
 }

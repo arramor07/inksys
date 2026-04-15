@@ -68,7 +68,7 @@ class BookingController extends Controller
 
 
     // CLIENT: handle booking submission
-    public function store(Request $request)
+   public function store(Request $request)
 {
     $validated = $request->validate([
         'name'              => ['required', 'string', 'max:255'],
@@ -157,6 +157,7 @@ class BookingController extends Controller
     return redirect()->route('book.create')
         ->with('success', 'Your booking has been submitted. Please check your email and SMS for updates.');
 }
+
 
 
     // ==================== AI IMAGE (AJAX PREVIEW via HUGGINGFACE) ====================

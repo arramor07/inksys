@@ -2,44 +2,32 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
      *
-     * @var list<string>
+     * @var array
      */
-    // app/Models/User.php
-
-protected $fillable = [
-    'name',
-    'email',
-    'password',
-    'status',
-    'role',   // ✅ add this
-];
-
-
-public function bookings()
-{
-    return $this->hasMany(Booking::class);
-}
-
-
-
+    protected $fillable = [
+        'name',
+        'email',
+        'password',
+        'status',
+        'role',   // e.g., 'admin', 'client'
+        'shop_id', // add this if user belongs to a shop
+    ];
 
     /**
      * The attributes that should be hidden for serialization.
      *
-     * @var list<string>
+     * @var array
      */
     protected $hidden = [
         'password',
@@ -47,15 +35,32 @@ public function bookings()
     ];
 
     /**
-     * Get the attributes that should be cast.
+     * The attributes that should be cast.
      *
-     * @return array<string, string>
+     * @var array
      */
-    protected function casts(): array
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+    ];
+
+    /**
+     * Relationships
+     */
+
+    // If user can book multiple appointments
+    public function bookings()
     {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
+        return $this->hasMany(Booking::class);
     }
+
+    // If user is a shop admin or belongs to a shop
+    public function shop()
+    {
+        return $this->belongsTo(Shop::class);
+    }
+
+    public function favorites(){
+    return $this->morphToMany(Favoritable::class, 'favoritable', 'favorites');
+}
 }

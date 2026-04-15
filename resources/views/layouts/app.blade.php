@@ -127,7 +127,7 @@ input:-webkit-autofill:focus {
     </main>
 
     <footer class="bg-black border-t border-white/5 text-center py-4 text-xs text-slate-400">
-        © {{ date('Y') }} InkTech • Aronmovez Tattoo Shop. All rights reserved.
+        © {{ date('Y') }} InkTech • All rights reserved.
     </footer>
 
 </body>

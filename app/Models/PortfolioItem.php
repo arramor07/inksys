@@ -15,5 +15,11 @@ class PortfolioItem extends Model
         'description',
         'image_url',
         'category',   // ✅ add this
+        'shop_id',
     ];
+
+    public function shop()
+{
+    return $this->belongsTo(Shop::class);
+}
 }

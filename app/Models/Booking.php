@@ -21,13 +21,20 @@ class Booking extends Model
     'ai_image_url',
     'reference_image_url',
     'status',
+    'shop_id',
 ];
+
 
 protected $casts = [
     'appointment_date'    => 'date',
     'downpayment_amount'  => 'decimal:2',
     'final_payment_amount'=> 'decimal:2',
 ];
+
+public function shop()
+{
+    return $this->belongsTo(Shop::class);
+}
 
 
 
